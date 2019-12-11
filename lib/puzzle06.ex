@@ -1065,20 +1065,10 @@ defmodule Puzzle06 do
   SHJ)32R
   """
 
-  def input1() do
+  def input() do
     @input
     |> String.split
     |> Enum.map(&(String.split(&1, ")")))
-    |> Enum.map(fn [left, right] -> {right, left} end)
-    |> Map.new
-  end
-
-  def input2() do
-    @input
-    |> String.split
-    |> Enum.map(&(String.split(&1, ")")))
-    |> Enum.map(fn [left, right] -> [{String.to_atom("#{left}|#{right}"), %Node{source: left, target: right}}, {String.to_atom("#{right}|#{left}"), %Node{source: right, target: left}}] end)
-    |> List.flatten
   end
 
   def count(map, from, acc) do
@@ -1089,7 +1079,9 @@ defmodule Puzzle06 do
   end
 
   def part1() do
-    map = input1()
+    map = input()
+    |> Enum.map(fn [left, right] -> {right, left} end)
+    |> Map.new
     map
     |> Enum.to_list
     |> Enum.reduce(0, fn {from, _to}, acc -> count(map, from, acc) end)
@@ -1116,7 +1108,10 @@ defmodule Puzzle06 do
   end
 
   def part2() do
-    count_path(input2(), "YOU", "SAN")
+    input()
+    |> Enum.map(fn [left, right] -> [{String.to_atom("#{left}|#{right}"), %Node{source: left, target: right}}, {String.to_atom("#{right}|#{left}"), %Node{source: right, target: left}}] end)
+    |> List.flatten
+    |> count_path("YOU", "SAN")
     |> Map.new
     |> Map.get(:end)
   end
